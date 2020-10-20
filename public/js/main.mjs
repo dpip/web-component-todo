@@ -1,28 +1,71 @@
-'use strict';
+"use strict";
 
 // Import css
-import 'modern-normalize/modern-normalize.css';
-import '../css/main.css';
+import "modern-normalize/modern-normalize.css";
+import "../css/main.css";
 
-// Register service worker
-if ('serviceWorker' in navigator) {
-	window.addEventListener('load', () => {
-		navigator.serviceWorker.register('/sw.js').then(registration => {
-			console.log('SW registered:', registration);
-		}).catch(error => {
-			console.log('SW registration failed:', error);
-		});
-	});
+const template = document.createElement("template");
+
+template.innerHTML = `
+<style>
+  :host {
+    display: block;
+    font-family: sans-serif;
+    text-align: center;
+  }
+
+  button {
+    border: none;
+    cursor: pointer;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+</style>
+
+<h1>To do</h1>
+
+<input type="text" placeholder="Add a new to do"></input>
+<button>✅</button>
+
+<ul id="todos"></ul>
+`;
+
+class TodoApp extends HTMLElement {
+  constructor() {
+    super();
+    this._shadowRoot = this.attachShadow({ mode: "open" });
+    this._shadowRoot.appendChild(template.content.cloneNode(true));
+    this.$todoList = this._shadowRoot.querySelector("ul");
+
+    document.querySelector("to-do-app").todos = [
+      { text: "Make a to-do list", checked: false },
+      { text: "Finish blog post", checked: false },
+    ];
+  }
+
+  _renderTodoList() {
+    this.$todoList.innerHTML = "";
+
+    this._todos.forEach((todo, index) => {
+      let $todoItem = document.createElement("div");
+      $todoItem.innerHTML = todo.text;
+      this.$todoList.appendChild($todoItem);
+    });
+  }
+
+  set todos(value) {
+    this._todos = value;
+    this._renderTodoList();
+  }
+
+  get todos() {
+    return this._todos;
+  }
 }
 
-// Counter
-const element = document.querySelector('#btn');
+window.customElements.define("to-do-app", TodoApp);
 
-element.addEventListener('click', () => {
-	const counter = document.querySelector('#counter');
-
-	counter.textContent++;
-});
-
-// Devtools console message ✨
-console.log('%cHello World!', 'color: black; font-size: 25px; font-weight: bold;');
+console.log("still working");
