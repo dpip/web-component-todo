@@ -41,7 +41,9 @@
         "xo": "^0.28.0"
     },
     "dependencies": {
+        "@webcomponents/webcomponentsjs": "^2.4.4",
         "core-js": "^3.6.4",
+        "lit-element": "^2.4.0",
         "modern-normalize": "^0.6.0"
     },
     "xo": {
